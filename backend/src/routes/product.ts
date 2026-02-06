@@ -2,11 +2,11 @@ import { Router } from 'express';
 import {
   getAllProducts,
   getProductById,
-  createProduct,
+  createProduct
 } from '../controllers/product';
 import {
   validateProductCreate,
-  validateProductId,
+  validateProductId
 } from '../middlewares/validation';
 
 const router = Router();
