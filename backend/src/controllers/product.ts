@@ -65,13 +65,9 @@ export const createProduct = async (
 
     const product = await Product.create(productData);
 
-    res.status(200).json({
-      title: product.title,
-      image: product.image,
-      category: product.category,
-      description: product.description,
-      price: product.price,
-      _id: product._id,
+    // ИСПРАВЛЕНО: статус 201 и поле id вместо _id
+    res.status(201).json({
+      id: product._id.toString(),
     });
   } catch (error: any) {
     // Обработка ошибок валидации Mongoose
