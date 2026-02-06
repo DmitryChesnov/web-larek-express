@@ -68,18 +68,17 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
 	}
 
 	getProductItem = (id: string): Promise<IProduct> => {
-		return this.get<IProduct>(`/product/${id}`).then((data: IProduct) => ({
+		return this.get<IProduct>(`/api/products/${id}`).then((data: IProduct) => ({
 			...data,
 			image: {
 				...data.image,
 				fileName: this.cdn + data.image.fileName,
 			}
-
 		}));
 	}
 
 	getProductList = (): Promise<IProduct[]> => {
-		return this.get<ApiListResponse<IProduct>>('/product').then((data: ApiListResponse<IProduct>) =>
+		return this.get<ApiListResponse<IProduct>>('/api/products').then((data: ApiListResponse<IProduct>) =>
 			data.items.map(item => ({
 				...item,
 				image: {
@@ -91,9 +90,8 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
 	}
 
 	orderProducts = (order: IOrder): Promise<IOrderResult> =>{
-		return this.post<IOrderResult>('/order', order).then((data: IOrderResult) => data);
+		return this.post<IOrderResult>('/api/orders', order).then((data: IOrderResult) => data);
 	}
 }
 
-
-export default new WebLarekAPI(CDN_URL, API_URL)
+export default new WebLarekAPI(CDN_URL, API_URL);
