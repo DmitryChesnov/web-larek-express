@@ -83,7 +83,7 @@ export const createOrder = async (
     const productPromises = items.map(async (itemId) => {
       // Пропускаем пустые строки (особенность тестов)
       if (itemId === '') return { itemId, product: null, error: null };
-      
+
       try {
         const product = await Product.findById(itemId);
         return { itemId, product, error: null };
@@ -101,7 +101,7 @@ export const createOrder = async (
     results.forEach(({ itemId, product, error }) => {
       // Пропускаем пустые строки
       if (itemId === '') return;
-      
+
       if (error || !product) {
         invalidItems.push(itemId);
         return;
@@ -141,7 +141,7 @@ export const createOrder = async (
         address,
         total,
         // Фильтруем пустые строки перед созданием ObjectId
-        items: items.filter(id => id !== '').map((id) => new mongoose.Types.ObjectId(id)),
+        items: items.filter((id) => id !== '').map((id) => new mongoose.Types.ObjectId(id)),
         orderId,
       });
 
@@ -163,7 +163,7 @@ export const createOrder = async (
           phone,
           address,
           total,
-          items: items.filter(id => id !== '').map((id) => new mongoose.Types.ObjectId(id)),
+          items: items.filter((id) => id !== '').map((id) => new mongoose.Types.ObjectId(id)),
           orderId: newOrderId,
         });
 

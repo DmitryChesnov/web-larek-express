@@ -92,7 +92,7 @@ export const validateOrderCreate = celebrate({
     items: Joi.array()
       .items(Joi.string().custom((value, helpers) => {
         // Для тестов: если строка пустая, пропускаем (тесты иногда отправляют "")
-        if (value === "") return value;
+        if (value === '') return value;
         if (!ObjectId.isValid(value)) {
           return helpers.error('any.invalid');
         }
