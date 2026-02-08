@@ -39,7 +39,7 @@ app.use(errorLogger);
 app.use(errors());
 
 // Централизованный обработчик ошибок
-app.use(errorHandler);
+
 
 // Подключение к MongoDB
 mongoose.set('strictQuery', true);
