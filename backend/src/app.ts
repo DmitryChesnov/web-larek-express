@@ -25,7 +25,7 @@ app.use(requestLogger);
 app.use('/images', express.static('public/images'));
 
 // Роуты
-app.use('/api', routes);
+app.use('/', routes);
 
 // Health check
 app.get('/health', (_req, res) => {
