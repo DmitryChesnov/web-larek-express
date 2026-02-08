@@ -1,11 +1,27 @@
 import mongoose, { Schema, Document } from 'mongoose';
+// Интерфейс для объекта image
+interface IProductImage {
+  fileName: string;
+  originalName: string;
+}
 
+// Схема для изображения
+const ProductImageSchema: Schema = new Schema({
+  fileName: {
+    type: String,
+    required: true,
+  },
+  originalName: {
+    type: String,
+    required: true,
+  },
+}, { _id: false }); // { _id: false } чтобы не создавать id для вложенного объекта
 export interface IProduct extends Document {
   title: string;
   description: string;
   price: number;
   category: string;
-  image?: string;
+  image?: IProductImage;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,16 +54,7 @@ const ProductSchema: Schema = new Schema({
     maxlength: [50, 'Максимальная длина поля "category" - 50'],
     trim: true,
   },
-  image: {
-    type: String,
-    default: '',
-    validate: {
-      validator(v: string) {
-        return v === '' || /^(https?:\/\/)/.test(v);
-      },
-      message: 'Неверный формат URL изображения',
-    },
-  },
+  image: ProductImageSchema,
 }, {
   timestamps: true,
 });
