@@ -22,13 +22,13 @@ export const validateProductCreate = celebrate({
         'any.required': 'Поле "title" должно быть заполнено',
       }),
     description: Joi.string()
-      .required()
-      .messages({
-        'any.required': 'Поле "description" должно быть заполнено',
-      }),
+      .allow('')
+      .default(''),
     price: Joi.number()
       .integer()
       .min(0)
+      .allow(null)
+      .default(null)
       .messages({
         'number.min': 'Цена не может быть отрицательной',
         'number.integer': 'Цена должна быть целым числом',

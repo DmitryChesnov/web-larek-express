@@ -152,9 +152,11 @@ export const createOrder = async (
         id: orderId,
         total,
       });
-    } catch (dbError: any) {
+    } catch (dbError: unknown) {
       // Если ошибка дублирования orderId
-      if (dbError.code === 11000 && dbError.keyPattern?.orderId) {
+      if (dbError instanceof Error && 'code' in dbError && dbError.code === 11000
+          && 'keyPattern' in dbError && typeof dbError.keyPattern === 'object'
+          && dbError.keyPattern && 'orderId' in dbError.keyPattern) {
         // Пробуем с новым UUID
         const newOrderId = uuidv4();
         const retryOrder = new Order({
@@ -178,21 +180,21 @@ export const createOrder = async (
 
       // Ошибки валидации Mongoose
       if (dbError instanceof mongoose.Error.ValidationError) {
-        const errors = Object.values(dbError.errors).map((err: any) => err.message);
+        const errors = Object.values(dbError.errors).map((err) => err.message);
         throw new BadRequestError(`Ошибка валидации: ${errors.join(', ')}`);
       }
 
       throw dbError;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Ошибка каста ID товара
-    if (error.name === 'CastError') {
+    if (error instanceof Error && error.name === 'CastError') {
       next(new BadRequestError('Передан не валидный ID товара'));
       return;
     }
 
     // Ошибка дублирования (если не обработана выше)
-    if (error.code === 11000) {
+    if (error instanceof Error && 'code' in error && error.code === 11000) {
       next(new ConflictError('Ошибка при создании заказа: дублирующий идентификатор'));
       return;
     }

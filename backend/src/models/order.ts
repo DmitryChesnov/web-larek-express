@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IOrder extends Document {
-    payment: 'card' | 'online';
+    payment: 'online' | 'cash';
     email: string;
     phone: string;
     address: string;
@@ -15,7 +15,7 @@ export interface IOrder extends Document {
 const orderSchema: Schema<IOrder> = new Schema({
   payment: {
     type: String,
-    enum: ['card', 'online'],
+    enum: ['online', 'cash'],
     required: [true, 'Способ оплаты обязателен'],
   },
   email: {
@@ -47,13 +47,12 @@ const orderSchema: Schema<IOrder> = new Schema({
   orderId: {
     type: String,
     required: true,
-    unique: true, // ← создаёт уникальный индекс, убираем дублирующий ниже
+    unique: true,
   },
 }, {
   timestamps: true,
 });
 
-// Оставляем только НЕ уникальные индексы, уникальный уже есть от unique: true
 orderSchema.index({ email: 1 });
 orderSchema.index({ createdAt: -1 });
 

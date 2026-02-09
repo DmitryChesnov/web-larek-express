@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+
 // Интерфейс для объекта image
 interface IProductImage {
   fileName: string;
@@ -15,13 +16,14 @@ const ProductImageSchema: Schema = new Schema({
     type: String,
     required: true,
   },
-}, { _id: false }); // { _id: false } чтобы не создавать id для вложенного объекта
+}, { _id: false });
+
 export interface IProduct extends Document {
   title: string;
   description: string;
-  price: number;
+  price: number | null;
   category: string;
-  image?: IProductImage;
+  image: IProductImage;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,8 +46,8 @@ const ProductSchema: Schema = new Schema({
   },
   price: {
     type: Number,
-    required: [true, 'Поле "price" должно быть заполнено'],
     min: [0, 'Цена не может быть отрицательной'],
+    default: null,
   },
   category: {
     type: String,
@@ -54,7 +56,10 @@ const ProductSchema: Schema = new Schema({
     maxlength: [50, 'Максимальная длина поля "category" - 50'],
     trim: true,
   },
-  image: ProductImageSchema,
+  image: {
+    type: ProductImageSchema,
+    required: [true, 'Изображение обязательно'],
+  },
 }, {
   timestamps: true,
 });

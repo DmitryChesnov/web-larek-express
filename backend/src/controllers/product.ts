@@ -34,20 +34,6 @@ export const createProduct = async (
       title, image, category, description, price,
     } = req.body;
 
-    // Валидация обязательных полей
-    if (!title || !image || !category) {
-      throw new BadRequestError(
-        'Пожалуйста, заполните все обязательные поля: title, image, category',
-      );
-    }
-
-    // Проверка структуры image
-    if (!image.fileName || !image.originalName) {
-      throw new BadRequestError(
-        'Поле image должно содержать fileName и originalName',
-      );
-    }
-
     // Проверка уникальности названия
     const existingProduct = await Product.findOne({ title });
     if (existingProduct) {
@@ -69,16 +55,16 @@ export const createProduct = async (
     res.status(201).json({
       id: product._id.toString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Обработка ошибок валидации Mongoose
     if (error instanceof mongoose.Error.ValidationError) {
-      const errors = Object.values(error.errors).map((err: any) => err.message);
+      const errors = Object.values(error.errors).map((err) => err.message);
       next(new BadRequestError(`Ошибка валидации: ${errors.join(', ')}`));
       return;
     }
 
     // Ошибка дублирования уникального поля
-    if (error.code === 11000) {
+    if (error instanceof Error && 'code' in error && error.code === 11000) {
       next(new ConflictError('Товар с таким названием уже существует'));
       return;
     }
@@ -103,8 +89,8 @@ export const getProductById = async (
     }
 
     res.status(200).json(product);
-  } catch (error: any) {
-    if (error.name === 'CastError') {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === 'CastError') {
       next(new BadRequestError('Передан не валидный ID товара'));
       return;
     }
